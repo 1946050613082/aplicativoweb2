@@ -1,0 +1,71 @@
+<!-- public/form.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #mensaje {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f8f8f8;
+    }
+
+    .info {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulario</h1>
+
+  <!-- Formulario de Doctor -->
+  <form id="doctorForm">
+    <!-- ... (resto del formulario) -->
+    <button type="button" onclick="submitForm('doctor')">Guardar Doctor</button>
+  </form>
+
+  <!-- Formulario de Paciente -->
+  <form id="pacienteForm">
+    <!-- ... (resto del formulario) -->
+    <button type="button" onclick="submitForm('paciente')">Guardar Paciente</button>
+  </form>
+
+  <!-- Formulario de Cita Médica -->
+  <form id="citaForm">
+    <!-- ... (resto del formulario) -->
+    <button type="button" onclick="submitForm('cita')">Guardar Cita</button>
+  </form>
+
+  <div id="mensaje"></div>
+
+  <script>
+    async function submitForm(type) {
+      const form = document.getElementById(`${type}Form`);
+      const formData = new FormData(form);
+      const response = await fetch(`http://localhost:3000/${type}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(formData),
+      });
+
+      const data = await response.json();
+      console.log(`Nuevo ${type}:`, data);
+
+      // Actualizar la interfaz de usuario de manera estructurada
+      const mensajeDiv = document.getElementById('mensaje');
+      mensajeDiv.innerHTML = `<div class="info">Nuevo ${type} guardado:</div>`;
+      
+      for (const key in data) {
+        mensajeDiv.innerHTML += `<div>${key}: ${data[key]}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>
